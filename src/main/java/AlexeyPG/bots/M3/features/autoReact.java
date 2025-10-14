@@ -1,17 +1,20 @@
 package AlexeyPG.bots.M3.features;
 
 import AlexeyPG.bots.M3.dataManager;
-import AlexeyPG.bots.M3.tempData;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+
 public class autoReact {
+    public static ArrayList<String> autoRoleChannels;
+    public static ArrayList<String> autoReactUsers;
+
     public static void react(Message message){
         try {
-            for (String channel : tempData.autoRoleChannels) {
+            for (String channel : autoReact.autoRoleChannels) {
                 if (channel.equals(message.getChannelId())) {
                     String[] reactions = dataManager.getData("features/autoreact/reactionMappings", message.getChannelId()).split(";");
                     for (String reaction : reactions) {
@@ -20,7 +23,7 @@ public class autoReact {
                     break;
                 }
             }
-            for(String user : tempData.autoReactUsers){
+            for(String user : autoReact.autoReactUsers){
                 if(user.equals(message.getAuthor().getId())){
                     String[] reactions = dataManager.getData("features/autoreact/reactionMappings", user).split(";");
                     for (String reaction : reactions) {
@@ -30,17 +33,17 @@ public class autoReact {
                 }
             }
         } catch (Exception e){
-            System.out.println(e.toString());
+            System.out.println(e.getMessage());
         }
     }
     public static void loadChannels(){
         try {
-            tempData.autoRoleChannels = new ArrayList<>();
-            Collections.addAll(tempData.autoRoleChannels, dataManager.getData("features/autoreact/trigger", "channels").split(";"));
+            autoReact.autoRoleChannels = new ArrayList<>();
+            Collections.addAll(autoReact.autoRoleChannels, dataManager.getData("features/autoreact/trigger", "channels").split(";"));
             System.out.println("Autoreact channels loaded");
         } catch (Exception e){
             System.out.println("Error loading autoreact channels");
-            tempData.autoRoleChannels = new ArrayList<>();
+            autoReact.autoRoleChannels = new ArrayList<>();
         }
     }
     public static void addChannel(String channelId, String emoji){
@@ -61,12 +64,12 @@ public class autoReact {
 
     public static void loadUsers(){
         try {
-            tempData.autoReactUsers = new ArrayList<>();
-            Collections.addAll(tempData.autoReactUsers, dataManager.getData("features/autoreact/trigger", "users").split(";"));
+            autoReact.autoReactUsers = new ArrayList<>();
+            Collections.addAll(autoReact.autoReactUsers, dataManager.getData("features/autoreact/trigger", "users").split(";"));
             System.out.println("Autoreact users loaded");
         } catch (Exception e){
             System.out.println("Error loading autoreact users");
-            tempData.autoReactUsers = new ArrayList<>();
+            autoReact.autoReactUsers = new ArrayList<>();
         }
     }
     public static void addUser(String userId, String emoji){
