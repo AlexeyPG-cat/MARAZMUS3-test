@@ -14,12 +14,14 @@ repositories {
 }
 
 
-
 dependencies {
+    implementation("javax.servlet:javax.servlet-api:3.1.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("net.dv8tion:JDA:5.6.1")
+    implementation("org.apache.tomcat:tomcat-catalina:11.0.9")
 }
+
 
 tasks.test {
     useJUnitPlatform()
