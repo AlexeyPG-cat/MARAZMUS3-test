@@ -21,9 +21,12 @@ public class statistics {
             int total = 0;
             int inGame = 0;
             for (Member member : members) {
-                if(!member.getActivities().isEmpty()) inGame++;
-                if(member.getOnlineStatus() != OnlineStatus.OFFLINE) online++;
-                total++;
+                if(!member.getUser().isBot()){
+                    if(!member.getActivities().isEmpty()) inGame++;
+                    if(member.getOnlineStatus() != OnlineStatus.OFFLINE && member.getOnlineStatus() != OnlineStatus.UNKNOWN) online++;
+                    total++;
+                }
+
             }
             statisticsMap.put(serverId, Arrays.asList(total,online,inGame));
             lastUpdateTime.put(serverId,System.currentTimeMillis());

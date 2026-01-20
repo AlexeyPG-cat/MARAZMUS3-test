@@ -4,3 +4,4 @@ Menu manager
 multiple sessions detector
 -use last start time communication as resolve who to stay alive
 first commit, the token was successfully not leaked!
+Timed actions manager

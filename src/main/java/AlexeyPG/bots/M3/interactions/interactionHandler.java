@@ -102,6 +102,9 @@ public class interactionHandler {
                         }
                     }
                 }
+                if(!done){
+                    event.reply("Reaction not found :(").setEphemeral(true).queue();
+                }
             }
 
 

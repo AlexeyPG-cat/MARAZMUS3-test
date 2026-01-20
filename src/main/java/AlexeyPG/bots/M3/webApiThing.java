@@ -27,7 +27,7 @@ public class webApiThing {
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
                 PrintWriter writer = resp.getWriter();
-
+                resp.setHeader("Access-Control-Allow-Origin", "*");
                 //I know that's not how it works. I don't know how to make it work how it supposes to work. Well it still works so who cares
                 if(req.getParameter("question") != null) switch (req.getParameter("question")){
                     case "PIOnline": writer.println(statistics.getOnline("860944840853291008"));break;
