@@ -42,16 +42,15 @@ public class channelLink {
         Long group = getGroupByChannel(origChannel);
         if(group != null){
             for(Long channel : Objects.requireNonNull(getChannels(group))){
-                System.out.println(origChannel + ":" + channel);
                 if(!Objects.equals(channel, origChannel)){
-                    System.out.println(origChannel + ":" + channel + "!=");
                     List<Webhook> webhooks = Objects.requireNonNull(Main.jda.getChannelById(TextChannel.class, channel)).retrieveWebhooks().complete();
                     if(webhooks.isEmpty()){
                         message.getChannel().asTextChannel().createWebhook("channelLink").queue();
                     }
                     WebhookMessageCreateAction<Message> msg = webhooks.get(0).sendMessage("a");
                     message.getGuild().retrieveMember(message.getAuthor()).queue(member -> {
-                        msg.setUsername(member.getNickname());
+                        if(member.getNickname() != null) msg.setUsername(member.getNickname());
+                        else msg.setUsername(message.getAuthor().getEffectiveName());
                         if(member.getAvatarUrl() != null) msg.setAvatarUrl(member.getAvatarUrl());
                         else if(message.getAuthor().getAvatarUrl() != null) msg.setAvatarUrl(message.getAuthor().getAvatarUrl());
 //                    msg.addComponents(message.getComponents());
@@ -78,7 +77,6 @@ public class channelLink {
     }
 
     public static void link(Long channel1, Long channel2){
-        System.out.println("linking...");
         TextChannel c1c = Main.jda.getChannelById(TextChannel.class,channel1);
         TextChannel c2c = Main.jda.getChannelById(TextChannel.class,channel2);
         List<Webhook> webhooks = c1c.retrieveWebhooks().complete();
@@ -89,26 +87,21 @@ public class channelLink {
         if(webhooks.isEmpty()){
             c2c.createWebhook("channelLink").queue();
         }
-        System.out.println("Webhooks retrieved");
         Long c1g = getGroupByChannel(channel1);
         Long c2g = getGroupByChannel(channel2);
         if(c1g != null && c2g != null){
             if(!Objects.equals(c1g, c2g)){
-                System.out.println("merging");
                 mergeGroups(c1g,c2g);
             }
         } else {
             if(c1g == null && c2g == null){
-                System.out.println("creating");
                 createGroup(channel1,channel2);
             } else {
-                System.out.println("adding");
                 Long g = c1g!=null?c1g:c2g;
                 Long c = c1g!=null?channel2:channel1;
                 addChannel(g,c);
             }
         }
-        System.out.println("linking complete");
         StringBuilder channels = new StringBuilder();
         boolean first = true;
         for(Long channel : Objects.requireNonNull(getChannels(getGroupByChannel(channel1)))){
@@ -119,7 +112,6 @@ public class channelLink {
                 channels.append(", <#").append(channel.toString()).append(">");
             }
         }
-        System.out.println("g:"+channels.toString());
         for(Long channel : Objects.requireNonNull(getChannels(getGroupByChannel(channel1)))){
             Main.jda.getChannelById(TextChannel.class, channel).sendMessage("Linked channels list updated:" + channels.toString()).queue();
         }
@@ -177,10 +169,6 @@ public class channelLink {
                     }
             }
         }
-
-
-
-        System.out.println("g:"+channels.toString());
         for(Long channel2 : Objects.requireNonNull(getChannels(getGroupByChannel(channel)))){
             Main.jda.getChannelById(TextChannel.class, channel2).sendMessage("Linked channels list updated: " + channels.toString()).queue();
         }

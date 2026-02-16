@@ -19,7 +19,7 @@ public class handleIncomingMessage {
                 handleDirectTextCommand(event.getMessage().getContentRaw().substring(("<@" + Main.jda.getSelfUser().getId() + ">").length()),event);
             }
         } else {
-            if(!event.getMessage().getAuthor().isBot()) channelLink.handleMessage(event.getMessage());
+            if(!event.getMessage().getAuthor().isBot()) if(!event.getMessage().getAuthor().isSystem()) channelLink.handleMessage(event.getMessage());
         }
     }
 
