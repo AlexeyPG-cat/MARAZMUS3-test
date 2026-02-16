@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class dataManager {
@@ -121,6 +122,23 @@ public class dataManager {
             return e.toString();
         }
         return "";
+    }
+
+    public static List<String> getDataListed(String file){
+        List<String> out = new ArrayList<>();
+        if(!fileExists(file + ".txt")) return out;
+        try {
+            Scanner fileScan = new Scanner(new FileReader(file + ".txt"));
+                if(fileScan.hasNextLine()){
+                    while (fileScan.hasNextLine()){
+                        out.add(fileScan.nextLine());
+                    }
+                    fileScan.close();
+                }
+                return out;
+        } catch (Exception e){
+            return new ArrayList<>();
+        }
     }
 
     public static void deleteData(String file, String key){

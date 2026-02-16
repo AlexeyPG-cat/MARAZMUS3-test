@@ -1,9 +1,11 @@
 package AlexeyPG.bots.M3;
 
 import AlexeyPG.bots.M3.features.autoReact;
+import AlexeyPG.bots.M3.features.channelLink;
 import AlexeyPG.bots.M3.features.voiceNotifier;
 import AlexeyPG.bots.M3.interactions.roleMasterButton;
 import net.dv8tion.jda.api.entities.Mentions;
+import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ public class handleIncomingMessage {
             if(event.getMessage().getContentRaw().startsWith("<@" + Main.jda.getSelfUser().getId() + ">")){
                 handleDirectTextCommand(event.getMessage().getContentRaw().substring(("<@" + Main.jda.getSelfUser().getId() + ">").length()),event);
             }
+        } else {
+            if(!event.getMessage().getAuthor().isBot()) channelLink.handleMessage(event.getMessage());
         }
     }
 
@@ -97,18 +101,35 @@ public class handleIncomingMessage {
                 event.getMessage().reply("@here").setAllowedMentions(List.of()).queue();
 
                 break;
-            case "watchchannelfor":
-                if(seq.get(1) != null && seq.get(2) != null){
-                    voiceNotifier.addWatcher(seq.get(1), event.getAuthor().getId());
-                    voiceNotifier.updateUserWatchedChannel(event.getAuthor().getId(),seq.get(1), seq.get(2));
-                    event.getMessage().reply("Now watching <#" + seq.get(1) + "> for " + seq.get(2)).queue();
+//            case "watchchannelfor":
+//                if(seq.get(1) != null && seq.get(2) != null){
+//                    voiceNotifier.addWatcher(seq.get(1), event.getAuthor().getId());
+//                    voiceNotifier.updateUserWatchedChannel(event.getAuthor().getId(),seq.get(1), seq.get(2));
+//                    event.getMessage().reply("Now watching <#" + seq.get(1) + "> for " + seq.get(2)).queue();
+//                }
+//                break;
+//            case "stopwatchingchannel":
+//                if(seq.get(1) !=null){
+//                    voiceNotifier.removeWatcher(seq.get(1), event.getAuthor().getId());
+//                    event.getMessage().reply("Ok").queue();
+//                }
+//                break;
+            case "link":
+                if(!event.getAuthor().getId().equals("665566492158590976")) break;
+                if(seq.get(1) != null){
+                    try{
+                        channelLink.link(event.getMessage().getChannel().getIdLong(),Long.parseLong(seq.get(1)));
+                        event.getMessage().reply("OK").queue();
+                    } catch (Exception e){
+                        event.getMessage().reply("Failed to link").queue();
+                    }
                 }
                 break;
-            case "stopwatchingchannel":
-                if(seq.get(1) !=null){
-                    voiceNotifier.removeWatcher(seq.get(1), event.getAuthor().getId());
-                    event.getMessage().reply("Ok").queue();
-                }
+            case "unlink":
+                if(!event.getAuthor().getId().equals("665566492158590976")) break;
+                channelLink.unlink(event.getChannel().getIdLong());
+                event.getMessage().reply("OK").queue();
+                break;
         }
     }
 

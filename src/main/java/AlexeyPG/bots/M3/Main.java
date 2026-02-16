@@ -16,7 +16,7 @@ import java.util.List;
 public class Main {
     public static boolean debug_mode = false;
     public static JDA jda;
-    public static String version = "0.1.9b3";
+    public static String version = "0.1.10";
     public static void main(String[] args) throws LifecycleException {
         config.addMissingConfigs();
         voiceNotifier.loadWatchers();

@@ -1,6 +1,7 @@
 package AlexeyPG.bots.M3;
 
 import AlexeyPG.bots.M3.features.autoReact;
+import AlexeyPG.bots.M3.features.channelLink;
 import AlexeyPG.bots.M3.interactions.interactionHandler;
 import AlexeyPG.bots.M3.interactions.roleMasterButton;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -24,6 +25,7 @@ public class Bot extends ListenerAdapter {
         autoReact.loadChannels();
         autoReact.loadUsers();
         interactionHandler.updateCommands();
+        channelLink.loadGroups();
         if(Main.debug_mode) return;
     }
     @Override

@@ -10,6 +10,7 @@ public class voiceNotifier {
     public static ArrayList<String> watchedChannels;
 
 
+    //u fckd up pushing to git, will fix it again later
     public static void loadWatchers(){
         try{
             watchedChannels = new ArrayList<>();
