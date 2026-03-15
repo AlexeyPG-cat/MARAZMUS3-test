@@ -5,10 +5,11 @@ import AlexeyPG.bots.M3.dataManager;
 import jakarta.annotation.Nullable;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Webhook;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 
+import java.net.URL;
 import java.util.*;
 
 public class channelLink {
@@ -47,15 +48,21 @@ public class channelLink {
                     if(webhooks.isEmpty()){
                         message.getChannel().asTextChannel().createWebhook("channelLink").queue();
                     }
-                    WebhookMessageCreateAction<Message> msg = webhooks.get(0).sendMessage("a");
+                    WebhookMessageCreateAction<Message> msg = webhooks.get(0).sendMessage("");
                     message.getGuild().retrieveMember(message.getAuthor()).queue(member -> {
                         if(member.getNickname() != null) msg.setUsername(member.getNickname());
                         else msg.setUsername(message.getAuthor().getEffectiveName());
                         if(member.getAvatarUrl() != null) msg.setAvatarUrl(member.getAvatarUrl());
                         else if(message.getAuthor().getAvatarUrl() != null) msg.setAvatarUrl(message.getAuthor().getAvatarUrl());
-//                    msg.addComponents(message.getComponents());
-//                    msg.addEmbeds(message.getEmbeds());
                         msg.applyMessage(message);
+                        for(Message.Attachment attachment : message.getAttachments()){
+                            try {
+                                System.out.println("Downloading user content");
+                                msg.addFiles(FileUpload.fromData(new URL(attachment.getUrl()).openStream(),attachment.getFileName()));
+                            } catch (Exception e) {
+                                System.out.println("Can't add attachments:\n" + e);
+                            }
+                        }
                         msg.queue();
                     });
                 }
