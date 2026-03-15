@@ -1,6 +1,7 @@
 package AlexeyPG.bots.M3;
 
 import AlexeyPG.bots.M3.features.voiceNotifier;
+import io.mokulu.discord.oauth.DiscordOAuth;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -16,7 +17,8 @@ import java.util.List;
 public class Main {
     public static boolean debug_mode = false;
     public static JDA jda;
-    public static String version = "0.1.10.1";
+    public static DiscordOAuth oAuthHandler =  new DiscordOAuth(dataManager.getData("data/bot/oAuth2/private","clientID"),dataManager.getData("data/bot/oAuth2/private","clientSecret"),dataManager.getData("data/bot/oAuth2/private","url"),new String[]{"identify"});
+    public static String version = "0.2";
     public static void main(String[] args) throws LifecycleException {
         config.addMissingConfigs();
         voiceNotifier.loadWatchers();

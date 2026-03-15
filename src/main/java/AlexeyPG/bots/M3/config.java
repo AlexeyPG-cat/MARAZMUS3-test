@@ -10,6 +10,7 @@ import java.util.*;
 
 
 //This is not needed anymore, I'll replace it with dataManager soon
+@Deprecated
 public class config {
     static HashMap<String,String> configs = new HashMap<>();
     static HashMap<String,HashMap<String,String>> serverConfigs = new HashMap<>();

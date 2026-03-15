@@ -11,7 +11,9 @@ version = "1.0"
 
 repositories {
     mavenCentral()
+    maven {url = uri("https://jitpack.io")}
 }
+
 
 
 dependencies {
@@ -19,7 +21,8 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("net.dv8tion:JDA:5.6.1")
-    implementation("org.apache.tomcat:tomcat-catalina:11.0.9")
+    implementation("org.apache.tomcat:tomcat-catalina:11.0.15")
+    implementation("com.github.Mokulu:discord-oauth2-api:1.0.4")
 }
 
 

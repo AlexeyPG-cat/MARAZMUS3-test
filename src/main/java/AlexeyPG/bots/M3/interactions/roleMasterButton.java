@@ -2,6 +2,7 @@ package AlexeyPG.bots.M3.interactions;
 
 import AlexeyPG.bots.M3.Main;
 import AlexeyPG.bots.M3.config;
+import AlexeyPG.bots.M3.publicAccess;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -15,7 +16,7 @@ public class roleMasterButton {
     public static void start(ButtonInteractionEvent event){
         System.out.println(event.getComponentId().substring(8));
         data += event.getComponentId().substring(8) + ",";
-        if(config.get("Player roles").contains(event.getComponentId().substring(8))){
+        if(publicAccess.roles.isRoleIDPublic(event.getComponentId().substring(8))){
             System.out.println("Role confirmed");
             Role role = Main.jda.getRoleById(event.getComponentId().substring(8));
             Member member = event.getMember();
@@ -41,7 +42,7 @@ public class roleMasterButton {
                 System.out.println("Role " + event.getComponentId().substring(8) + " not found on server");
             }
         } else {
-            System.out.println("Role " + event.getComponentId().substring(8) + " not found in config");
+            System.out.println("Role " + event.getComponentId().substring(8) + " no access to role");
         }
     }
     public static void swRecord(){

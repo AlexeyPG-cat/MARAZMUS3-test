@@ -21,9 +21,9 @@ import static AlexeyPG.bots.M3.features.voiceNotifier.handleVoiceConnection;
 public class Bot extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
-        config.loadAdminLists();
         autoReact.loadChannels();
         autoReact.loadUsers();
+        System.out.println(publicAccess.roles.load());
         interactionHandler.updateCommands();
         channelLink.loadGroups();
         if(Main.debug_mode) return;
