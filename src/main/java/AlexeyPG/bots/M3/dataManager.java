@@ -3,9 +3,7 @@ package AlexeyPG.bots.M3;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -180,6 +178,27 @@ public class dataManager {
         } catch (Exception e){
             return;
         }
+    }
+
+
+    public static boolean saveStream(Object object, String file){
+        prepareFile(file + ".dat");
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file + ".dat"))){
+            oos.writeObject(object);
+            oos.close();
+            return true;
+        } catch (Exception e) {
+            System.out.printf("Can't save file ["+file+".dat]\n" + e.getMessage());
+        }
+        return false;
+    }
+    public static Object loadStream(String file){
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file + ".dat"))){
+            return ois.readObject();
+        } catch (Exception e) {
+            System.out.println("Can't read file ["+file+".dat]\n" + e.getMessage());
+        }
+        return null;
     }
 
     private static boolean fileExists(String file){

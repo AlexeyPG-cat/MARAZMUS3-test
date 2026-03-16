@@ -18,7 +18,7 @@ public class Main {
     public static boolean debug_mode = false;
     public static JDA jda;
     public static DiscordOAuth oAuthHandler =  new DiscordOAuth(dataManager.getData("data/bot/oAuth2/private","clientID"),dataManager.getData("data/bot/oAuth2/private","clientSecret"),dataManager.getData("data/bot/oAuth2/private","url"),new String[]{"identify"});
-    public static String version = "0.2";
+    public static String version = "0.2.1";
     public static void main(String[] args) throws LifecycleException {
         config.addMissingConfigs();
         voiceNotifier.loadWatchers();
