@@ -94,7 +94,7 @@ public class webApiThing {
     }
 
     private static void grantRoles(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer) {
-        Pair<User, String> auths = reAuthorize(req.getParameter("token"));
+        Pair<User, String> auths = getUserIdentity(req.getParameter("token"));
         User user = auths.component1();
         Map<String, String> data = new HashMap<>();
         if(user == null){
@@ -113,7 +113,7 @@ public class webApiThing {
                         roles.add(Main.jda.getRoleById(roleID));
                 }
                 Guild guild = Main.jda.getGuildById("860944840853291008");
-                if(user!=null)
+                auths = new Pair<>(auths.component1(),joinUser(auths.component2(),guild,user, roles.toArray(new Role[]{})));
                     guild.retrieveMemberById(user.getId()).queue(member -> {
                     ArrayList<Role> roles2 = new ArrayList<>();
                     for (Role role_ : roles) {
@@ -131,10 +131,6 @@ public class webApiThing {
                     if(!roles2.isEmpty())
                         Main.jda.getTextChannelById(config.get("Game message channel")).sendMessage("Удалённый запрос: <@" + member.getUser().getId() + "> теперь ищет в **" + sb + "**").setSuppressedNotifications(true).setAllowedMentions(List.of()).queue();
                 });
-                else{
-                    resp.setStatus(400);
-                    data.put("Error","Invalid user");
-                }
             } catch (Exception e) {
                 System.out.println("Exception trying give role:" + e.getMessage());
             }
@@ -148,7 +144,7 @@ public class webApiThing {
     }
 
     public static void rateReview(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer){
-        Pair<User, String> auths = reAuthorize(req.getParameter("token"));
+        Pair<User, String> auths = getUserIdentity(req.getParameter("token"));
         User user = auths.component1();
         Map<String, String> data = new HashMap<>();
         if(user == null){
@@ -191,7 +187,7 @@ public class webApiThing {
         }
         String userId = null;
         if (req.getParameter("token") != null) {
-            Pair<User, String> auths = reAuthorize(req.getParameter("token"));
+            Pair<User, String> auths = getUserIdentity(req.getParameter("token"));
             if (auths.component1() != null) {
                 userId = auths.component1().getId();
             }
@@ -210,7 +206,7 @@ public class webApiThing {
     }
 
     public static void deleteReview(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer) {
-        Pair<User, String> auths = reAuthorize(req.getParameter("token"));
+        Pair<User, String> auths = getUserIdentity(req.getParameter("token"));
         User user = auths.component1();
         Map<String, String> data = new HashMap<>();
         if(user == null){
@@ -233,7 +229,7 @@ public class webApiThing {
     }
 
     private static void saveReview(HttpServletRequest req, HttpServletResponse resp, PrintWriter writer) {
-        Pair<User, String> auths = reAuthorize(req.getParameter("token"));
+        Pair<User, String> auths = getUserIdentity(req.getParameter("token"));
         User user = auths.component1();
         Map<String, String> data = new HashMap<>();
         if(user == null){
@@ -290,6 +286,10 @@ public class webApiThing {
             name = user.getId();
         }
 
+        Guild guild = Main.jda.getGuildById("860944840853291008");
+
+        refreshToken = joinUser(refreshToken,guild,user);
+
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
@@ -301,7 +301,7 @@ public class webApiThing {
         writer.println(json);
     }
 
-    private static Pair<User, String> reAuthorize(String token) {
+    private static Pair<User, String> getUserIdentity(String token) {
         String refreshToken = "";
         User user = null;
         try {
@@ -318,6 +318,22 @@ public class webApiThing {
         }
 
         return new Pair<>(user, refreshToken);
+    }
+
+    public static String joinUser(String token, Guild guild, User userIn, Role... roles){
+        String refreshToken = "";
+        try {
+            Connection request = Jsoup.connect("https://discord.com/api/oauth2/token").data("client_id", dataManager.getData("data/bot/oAuth2/private", "clientID")).data("client_secret", dataManager.getData("data/bot/oAuth2/private", "clientSecret")).data("grant_type", "refresh_token").data("refresh_token", token).ignoreContentType(true);
+            String response = request.post().body().text();
+            Gson gson = (new GsonBuilder()).serializeNulls().enableComplexMapKeySerialization().create();
+
+            TokensResponse tokens = ((TokensResponse) gson.fromJson(response, TokensResponse.class));
+            DiscordAPI api = new DiscordAPI(tokens.getAccessToken());
+            refreshToken = tokens.getRefreshToken();
+            guild.addMember(tokens.getAccessToken(),userIn).setRoles(roles).queue();
+        } catch (Exception ignore) {
+        }
+        return refreshToken;
     }
 
 }
