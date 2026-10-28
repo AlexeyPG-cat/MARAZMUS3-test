@@ -20,9 +20,14 @@ dependencies {
     implementation("javax.servlet:javax.servlet-api:3.1.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("net.dv8tion:JDA:5.6.1")
-    implementation("org.apache.tomcat:tomcat-catalina:11.0.15")
-    implementation("com.github.Mokulu:discord-oauth2-api:1.0.4")
+    implementation("net.dv8tion:JDA:6.7.0")
+    implementation("org.apache.tomcat:tomcat-catalina:11.0.27")
+    implementation("org.jsoup:jsoup:1.23.2")
+    implementation("com.google.code.gson:gson:2.15.0")
+
+
+    //implementation("com.github.Mokulu:discord-oauth2-api:1.0.4") used same lib locally with just updated dependencies:
+    implementation(files("libs/discord-oauth2-api.jar"))
 }
 
 
